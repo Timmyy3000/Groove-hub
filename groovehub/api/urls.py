@@ -1,8 +1,8 @@
 from django.urls import path
-from views import *
+from .views import *
 
 #url paterns
 
 urlpatterns = [
-    path(),
+    path('api/', RoomView.as_view())
 ]
