@@ -1,4 +1,4 @@
-import React , { Component } from "react"
+import React  from "react"
 import {
     BrowserRouter as Router,
     Route,
@@ -20,7 +20,7 @@ const App = () => {
         <div className= "center">
         <Router>
           <Switch>
-            <Route exact path="/" ><HomePage /></Route>
+            <Route exact path="/"  component={HomePage}> </Route>
             <Route path="/join-room"  component={JoinRoomPage}></Route>
             <Route path="/create-room"  component={CreateRoomPage}  ></Route>
             <Route path="/room/:roomCode" component={Room} ></Route>
