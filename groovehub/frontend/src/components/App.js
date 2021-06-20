@@ -17,16 +17,16 @@ import Room from "./Room";
 
 const App = () => {
     return (
-        <>
+        <div className= "center">
         <Router>
           <Switch>
             <Route exact path="/" ><HomePage /></Route>
             <Route path="/join-room"  ><JoinRoomPage /></Route>
-            <Route path="/create-room"  ><CreateRoomPage/></Route>
+            <Route path="/create-room"  component={CreateRoomPage}  ></Route>
             <Route path="/room/:roomCode" component={Room} ></Route>
           </Switch>
       </Router>
-        </>
+        </div>
     )
 }
 

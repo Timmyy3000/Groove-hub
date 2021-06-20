@@ -14,7 +14,7 @@ import {
 import { Link } from "react-router-dom";
 
 
-const CreateRoomPage = () => {
+const CreateRoomPage = (props) => {
     const defaultVotes = '2';
 
     const [guestCanPause, setGuestCanPause ] = useState(true);
@@ -45,7 +45,7 @@ const CreateRoomPage = () => {
         fetch('api/create-room/', requestOptions).then((response) =>
             response.json()
         ).then((data) => 
-            console.log(data)
+            props.history.push('/room/' + data.code)
         );
     }
 
