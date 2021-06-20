@@ -21,7 +21,7 @@ const App = () => {
         <Router>
           <Switch>
             <Route exact path="/" ><HomePage /></Route>
-            <Route path="/join-room"  ><JoinRoomPage /></Route>
+            <Route path="/join-room"  component={JoinRoomPage}></Route>
             <Route path="/create-room"  component={CreateRoomPage}  ></Route>
             <Route path="/room/:roomCode" component={Room} ></Route>
           </Switch>
