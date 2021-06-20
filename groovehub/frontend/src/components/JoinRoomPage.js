@@ -17,6 +17,15 @@ const JoinRoomPage = (props) => {
 
     const [roomCode, setRoomCode] = useState("")
     const [error, setError] = useState("")
+
+    const handleTextFieldChange = (e) => {
+        setRoomCode(e.target.value)
+    }
+
+    const RoomButtonPressed = () => {
+
+    }
+
     return (
         <Grid container spacing={1} alignItems='center'>
             <Grid item xs = {12} align="center">
@@ -32,11 +41,12 @@ const JoinRoomPage = (props) => {
                     vlaue = {roomCode}
                     helperText = {error}
                     variant="outlined"
+                    onChange = {handleTextFieldChange}
 
                     />
             </Grid>
             <Grid item xs = {12} align="center">
-                <Button variant="contained" color="green" to='/' component={Link} >Back</Button>
+                <Button variant="contained" color="default" onClick = {RoomButtonPressed}>Enter Room</Button>
             </Grid>
             <Grid item xs = {12} align="center">
             <Button variant="contained" color="secondary" to='/' component={Link} >Back</Button>
