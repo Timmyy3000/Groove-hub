@@ -1,6 +1,7 @@
 import React from "react";
 import Button from "@material-ui/core/Button";
 import {
+    Box,
   FormControl,
   FormControlLabel,
   FormHelperText,
@@ -11,7 +12,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
-
+import { spacing } from '@material-ui/system';
 const CreateRoomPage = () => {
   const defaultVotes = 2;
 
@@ -63,11 +64,12 @@ const CreateRoomPage = () => {
             </FormControl>
         </Grid>
         <Grid item xs={12} align="center">
+            <Box  m='6px'>
             <Button color = 'primary' variant ="contained">Create Room</Button>
+            </Box>
+            <Button color = 'secondary' variant ="contained" to = "/" component = {Link}>Back</Button>
         </Grid>
-        <Grid item xs={12} align="center">
-            <Button color = 'primary' variant ="contained">Create Room</Button>
-        </Grid>
+        
       </Grid>
     </>
   );
