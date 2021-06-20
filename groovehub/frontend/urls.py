@@ -4,5 +4,8 @@ from .views import *
 #url paterns
 
 urlpatterns = [
-    path('', index, name = "home")
+    path('', index),
+    path('home', index),
+    path('join-room', index),
+    path('create-room', index),
 ]
