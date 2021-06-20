@@ -18,10 +18,9 @@ const App = () => {
         <>
         <Router>
           <Switch>
-            
-              <Route path='/join-room' component ={JoinRoomPage} ></Route>
-              <Route path='/create-room' component ={CreateRoomPage} ></Route>
-              <Route path='/home' Component={HomePage} > </Route>
+            <Route exact path="/" component={HomePage}></Route>
+            <Route path="/join-room"  component={JoinRoomPage}></Route>
+            <Route path="/create-room" component={CreateRoomPage} ></Route>
           </Switch>
       </Router>
         </>
