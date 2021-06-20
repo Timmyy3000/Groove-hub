@@ -42,7 +42,7 @@ const CreateRoomPage = (props) => {
                 guest_can_pause : guestCanPause,
             }),
         };
-        fetch('api/create-room/', requestOptions).then((response) =>
+        fetch('/api/create-room/', requestOptions).then((response) =>
             response.json()
         ).then((data) => 
             props.history.push('/room/' + data.code)

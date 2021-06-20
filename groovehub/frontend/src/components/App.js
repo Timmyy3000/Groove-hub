@@ -21,9 +21,9 @@ const App = () => {
         <Router history={history}>
           <Switch>
             <Route exact path="/"  > <HomePage/>{ console.log(HomePage.roomCode) }</Route>
-            <Route path="/join-room"  component={JoinRoomPage}></Route>
-            <Route path="/create-room"  component={CreateRoomPage}  ></Route>
-            <Route path="/room/:roomCode" component={Room} ></Route>
+            <Route path="/join-room/"  component={JoinRoomPage}></Route>
+            <Route path="/create-room/"  component={CreateRoomPage}  ></Route>
+            <Route path="/room/:roomCode/" component={Room} ></Route>
           </Switch>
       </Router>
         </div>

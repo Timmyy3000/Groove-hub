@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useRouteMatch } from 'react-router'
+import { Link } from 'react-router-dom'
 import {Button, Grid, Typography} from '@material-ui/core'
 const Room = (props) => {
 
@@ -10,12 +10,30 @@ const Room = (props) => {
 
     const getRoomDetails = () => {
         fetch('/api/get-room' + '?code=' + roomCode).then((response) => {
+
+            if (!response.ok) 
+            {
+                props.history.push('/')
+            }
+            
             return response.json()
         }).then ((data) => {
             setVotesToSkip(data.votes_to_skip)
             setGuestCanPause(data.guest_can_pause)
             setIsHost(data.is_host)
-            console.log(data)
+            
+        });
+    }
+    const leaveButtonPressed = () => {
+
+        const requestOptions = {
+            method : "POST",
+            headers : {'Content-Type' :'application/json'}
+        }
+
+        fetch('/api/leave-room/' , requestOptions).then((response) => {
+            console.log(response)
+              props.history.push('/')
         });
     }
 
@@ -29,20 +47,27 @@ const Room = (props) => {
                 </Typography>
             </Grid>
             <Grid item xs={12} align='center'>
-            <Typography variant="h4" component="h4" >
-                    Code : {roomCode}
+            <Typography variant="h6" component="h6" >
+                    Votes To Skip : {votesToSkip}
                 </Typography>
             </Grid>
             <Grid item xs={12} align='center'>
-            <Typography variant="h4" component="h4" >
-                    Code : {roomCode}
+            <Typography variant="h6" component="h6" >
+                    Host : {isHost.toString()}
                 </Typography>
             </Grid>
             <Grid item xs={12} align='center'>
-            <Typography variant="h4" component="h4" >
-                    Code : {roomCode}
+            <Typography variant="h6" component="h6" >
+                    Guest Can Pause : {guestCanPause.toString()}
                 </Typography>
             </Grid>
+            <Grid item xs={12} align="center">
+
+            <Button variant="contained" color="secondary" onClick={leaveButtonPressed}>
+          Leave Room
+        </Button>
+           
+          </Grid>
         </Grid>
     )
 }
