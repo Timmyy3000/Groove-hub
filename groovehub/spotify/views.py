@@ -20,7 +20,7 @@ class AuthURL(APIView):
         scopes = 'user-read-playback-state user-modify-playback-state user-read-currently-playing'
 
         url = Request('GET', 'https://accounts.spotify.com/authorize', params={
-            'scoper' : scopes,
+            'scope' : scopes,
             'response_type' : 'code',
             'redirect_uri' : REDIRECT_URI,
             'client_id' : CLIENT_ID
@@ -82,10 +82,39 @@ class CurrentSong(APIView):
 
         host = room.host
 
-        endpoint = '/player/currently-playing'
+        endpoint = 'player/currently-playing/'
 
         response = execute_spotify_api_call(host, endpoint)
 
-        print(response)
+        if 'error' in response or 'item' not in response :
 
-        return Response(response, status=status.HTTP_200_OK)
+            return Response({}, status=status.HTTP_204_NO_CONTENT)
+
+        item = response.get('item')
+        duration = item.get('duration_ms')
+        progress = response.get('progress_ms')
+        album_cover = item.get('album').get('images')[0].get('url')
+        is_playing = response.get('is_playing')
+        song_id = item.get('id')
+
+
+        artist_string = ""
+
+        for i, artist in enumerate(item.get('artist')):
+            if i > 0:
+                artist_string += ', '
+                name = artist.get('name')
+                artist_string += name
+
+        song = {
+            'title' : item.get('name'),
+            'artist' : artist_string,
+            'duration' : duration,
+            'time' : progress,
+            'image_url' : album_cover,
+            'is_playing' : is_playing,
+            'votes' : 0,
+            'id' : song_id
+        }
+
+        return Response(song, status=status.HTTP_200_OK)
