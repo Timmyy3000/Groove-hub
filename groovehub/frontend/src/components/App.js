@@ -12,6 +12,7 @@ import HomePage from "./HomePage"
 import JoinRoomPage from "./JoinRoomPage";
 import Room from "./Room";
 import history from './history';
+import RoomSettingsPage from "./RoomSettingsPage";
 
 // App component
 
@@ -20,10 +21,11 @@ const App = () => {
         <div className= "center">
         <Router history={history}>
           <Switch>
-            <Route exact path="/"  > <HomePage/>{ console.log(HomePage.roomCode) }</Route>
+            <Route exact path="/"  > <HomePage/></Route>
             <Route path="/join-room/"  component={JoinRoomPage}></Route>
             <Route path="/create-room/"  component={CreateRoomPage}  ></Route>
-            <Route path="/room/:roomCode/" component={Room} ></Route>
+            <Route  exact path="/room/:roomCode/" component={Room} ></Route>
+            <Route path="/room/:roomCode/settings/" component={RoomSettingsPage} ></Route>
           </Switch>
       </Router>
         </div>
