@@ -22,6 +22,9 @@ const HomePage = (props) => {
         .then((response) => response.json())
         .then((data) => {
             setRoomCode(data.code)
+            console.log(roomCode)
+            
+
         });
 
     })
@@ -51,7 +54,7 @@ const HomePage = (props) => {
     }
     
     else {
-      return <Redirect to ={`/room/${roomCode}`}/>
+      return <Redirect to ={`/room/${roomCode}/`}/>
     }
 
     

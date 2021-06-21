@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Button, Collapse, Grid, Typography} from "@material-ui/core";
+import { Button, Collapse, Grid, IconButton, Typography} from "@material-ui/core";
 import { Alert, AlertTitle } from '@material-ui/lab';
 import history from "./history";
+import CloseIcon from '@material-ui/icons/Close';
+
 const Room = (props) => {
+
   const [votesToSkip, setVotesToSkip] = useState("");
   const [guestCanPause, setGuestCanPause] = useState(false);
   const [isHost, setIsHost] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   let message = null;
-  const [successMsg, setSuccessMsg] = useState("");
+  
   const roomCode = props.match.params.roomCode;
 
   const location = useLocation();
@@ -18,12 +22,34 @@ const Room = (props) => {
   function renderMessage (success, text) {
     if (success == true) {
         console.log('success')
-        renderedMessage  = (<Alert severity="success">
+        renderedMessage  = (<Alert severity="success" action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setIsOpen(false)
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }>
       <AlertTitle>Success</AlertTitle>
       {text}
   </Alert>)
     } else {
-        renderedMessage =  (<Alert severity="error">
+        renderedMessage =  (<Alert severity="error"  action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setIsOpen(false)
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }>
       <AlertTitle>Oops</AlertTitle>
       {text}
   </Alert>)
@@ -43,13 +69,11 @@ const Room = (props) => {
   }
 
   
+
   const getRoomDetails = () => {
     fetch("/api/get-room" + "?code=" + roomCode)
       .then((response) => {
-        if (!response.ok) {
-          props.history.push("/");
-        }
-
+       
         return response.json();
       })
       .then((data) => {
@@ -58,8 +82,8 @@ const Room = (props) => {
         setIsHost(data.is_host);
       });
   };
-
   getRoomDetails();
+
 
   const leaveButtonPressed = () => {
     const requestOptions = {
@@ -72,10 +96,10 @@ const Room = (props) => {
     });
   };
 
-
+  
   useEffect(() => {
     const roomCode = props.match.params.roomCode;
-    history.replace();
+    history.replace(`/room/${roomCode}/`, null);
   });
 
   let settingsButton = "";
@@ -98,20 +122,6 @@ const Room = (props) => {
     );
   }
 
-  const renderSettingButoon = () => {
-    return (
-      <Grid item xs={12} align="center">
-        <Button
-          variant="contained"
-          color="primary"
-          to={`/room/${roomCode}/settings/`}
-          component={Link}
-        >
-          Update Room
-        </Button>
-      </Grid>
-    );
-  };
 
   return (
     <Grid container spacing={1}>
@@ -121,7 +131,7 @@ const Room = (props) => {
         </Typography>
       </Grid>
       <Grid item xs={12} align="center">
-        <Collapse in={(message != null) }>
+        <Collapse in={(message != null && isOpen == true) }>
             {renderedMessage}
         </Collapse>
       </Grid>
