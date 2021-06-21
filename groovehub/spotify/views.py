@@ -1,10 +1,16 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from rest_framework.response import Response
+
 from .credentials import *
+
 from rest_framework.views import APIView
+
 from requests import Request, post
+
 from rest_framework import status
 from rest_framework.response import Response
+
+from .util import update_or_create_user_token
 
 class AuthURL(APIView):
 
@@ -37,7 +43,12 @@ def spotify_callback(request, format=None):
     refresh_token = response.get('refresh_token')
     expires_in = response.get('expires_in')
     error = response.get('error')
+    
 
     if not request.session.exists(request.session.session_key):
         request.session.create()
+    
+    update_or_create_user_token(request.session.session_key, access_token, token_type, expires_in, refresh_token)
+
+    return redirect('frontend:')
 
