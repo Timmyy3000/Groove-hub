@@ -23,9 +23,11 @@ const Room = (props) => {
     fetch('/spotify/is-authenticated/').then ((response) => response.json()).then ((data) =>{
       setSpotifyAuthenticated(data.status)
 
+      console.log(data.status)
+
       if (!data.status){
         fetch('/spotify/get-auth-url').then((response) => response.json()).then ((data) => {
-          location.replace(data.url)
+          window.location.replace(data.url)
         })
       }
 

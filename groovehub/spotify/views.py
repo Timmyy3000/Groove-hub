@@ -1,3 +1,4 @@
+from django.http import response
 from django.shortcuts import redirect, render
 from rest_framework.response import Response
 
@@ -10,8 +11,9 @@ from requests import Request, post
 from rest_framework import status
 from rest_framework.response import Response
 
-from .util import is_spotify_authenticated, update_or_create_user_token
+from .util import *
 
+from api.models import *
 class AuthURL(APIView):
 
     def get(self, request, format=None):
@@ -29,6 +31,7 @@ class AuthURL(APIView):
 def spotify_callback(request, format=None):
     code = request.GET.get('code')
     error = request.GET.get('error')
+
 
     response = post('https://accounts.spotify.com/api/token', data={
         'grant_type': 'authorization_code',
@@ -58,6 +61,31 @@ class IsAuthenticated(APIView):
     def get(self, request):
 
         is_authenticated = is_spotify_authenticated(self.request.session.session_key)
+      
+        return Response({'status' :is_authenticated}, status = status.HTTP_200_OK)
 
-        return Response({'Status' :is_authenticated}, status = status.HTTP_200_OK)
+# current song api
 
+class CurrentSong(APIView):
+
+    def get(self, request):
+
+        room_code = self.request.session.get('room_code')
+
+        room = Room.objects.filter(code = room_code)
+
+        if room.exists():
+            room = room [0]
+        
+        else:
+            return Response ({'Bad Request':'Room Not Found'}, status=status.HTTP_404_NOT_FOUND)
+
+        host = room.host
+
+        endpoint = '/player/currently-playing'
+
+        response = execute_spotify_api_call(host, endpoint)
+
+        print(response)
+
+        return Response(response, status=status.HTTP_200_OK)
