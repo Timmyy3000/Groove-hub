@@ -12,7 +12,7 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import { Link, useLocation } from "react-router-dom";
+import { Link, Redirect, useLocation } from "react-router-dom";
 
 const RoomSettingsPage = (props) => {
 
@@ -29,6 +29,8 @@ const RoomSettingsPage = (props) => {
   const [successMsg, setSuccessMsg] = useState("");
 
   const [errorMsg, setErrorMsg] = useState("");
+
+  const [redirect, setRedirect] = useState(false);
 
   const handleVotesChange = (e) => {
     setVotesToSkip(e.target.value);
@@ -58,12 +60,30 @@ const RoomSettingsPage = (props) => {
         }
       })
       .then((data) => {
-        props.history.push(`/room/${roomCode}/`);
+
+        setRedirect(true) 
+    
       });
   };
 
+
   function renderPage() {
-    return (
+    
+
+    if (redirect ) {
+        return (
+        <Redirect to = {{
+            pathname : `/room/${roomCode}/`,
+            state : {
+                successMsg : successMsg,
+                errorMsg : errorMsg
+            }
+        }}/>
+        )
+
+    } else {
+
+        return (
       <>
         <Grid container spacing={1}>
             
@@ -136,6 +156,7 @@ const RoomSettingsPage = (props) => {
         </Grid>
       </>
     );
+            }
   }
 
   return renderPage();
