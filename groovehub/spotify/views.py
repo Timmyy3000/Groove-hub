@@ -52,3 +52,6 @@ def spotify_callback(request, format=None):
 
     return redirect('frontend:')
 
+
+
+

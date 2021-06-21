@@ -2,10 +2,10 @@ from django.urls import path
 from .views import *
 
 #url paterns
+app_name = 'frontend'
 
 urlpatterns = [
-    path('', index),
-    path('home/', index),
+    path('', index, name = ''),
     path('join-room/', index),
     path('create-room/', index),
     path('room/<str:roomCode>/', index),
