@@ -11,11 +11,26 @@ const Room = (props) => {
   const [guestCanPause, setGuestCanPause] = useState(false);
   const [isHost, setIsHost] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
+  const [spotifyAuthenticated, setSpotifyAuthenticated] = useState(false)
   let message = null;
   
   const roomCode = props.match.params.roomCode;
 
   const location = useLocation();
+
+  function authenticateSpotify () {
+
+    fetch('/spotify/is-authenticated/').then ((response) => response.json()).then ((data) =>{
+      setSpotifyAuthenticated(data.status)
+
+      if (!data.status){
+        fetch('/spotify/get-auth-url').then((response) => response.json()).then ((data) => {
+          location.replace(data.url)
+        })
+      }
+
+    })
+  }
 
   let renderedMessage = ''
 
@@ -81,6 +96,10 @@ const Room = (props) => {
         setGuestCanPause(data.guest_can_pause);
         setIsHost(data.is_host);
       });
+
+      if (isHost){
+        authenticateSpotify()
+      }
   };
   getRoomDetails();
 
