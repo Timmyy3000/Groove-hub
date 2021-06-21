@@ -4,5 +4,5 @@ from .views import *
 #url paterns
 
 urlpatterns = [
-    path('get-auth-utl/', AuthURL.as_view())
+    path('get-auth-url/', AuthURL.as_view())
 ]
