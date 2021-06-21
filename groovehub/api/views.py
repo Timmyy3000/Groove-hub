@@ -155,6 +155,6 @@ class UpdateRoom (APIView):
             room.votes_to_skip = votes_to_skip
             room.save(update_fields=['guest_can_pause', 'votes_to_skip'])
 
-            return Response(RoomSerializer(room).data, status=status.status.HTTP_200_OK)
+            return Response(RoomSerializer(room).data, status=status.HTTP_200_OK)
 
         return Response({"Bad Request" : "Invalid data ..."}, status=status.HTTP_400_BAD_REQUEST)

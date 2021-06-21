@@ -30,7 +30,7 @@ const Room = (props) => {
     };
 
     fetch("/api/leave-room/", requestOptions).then((response) => {
-      console.log(response);
+      
       props.history.push("/");
     });
   };
@@ -41,6 +41,8 @@ const Room = (props) => {
     const roomCode = props.match.params.roomCode;
   })
 
+
+
   let settingsButton = ''
 
   if (isHost == true ){
@@ -49,7 +51,11 @@ const Room = (props) => {
         <Button
         variant="contained"
         color="primary"
-        to = {`/room/${roomCode}/settings/`}
+        to={{
+            pathname: `/room/${roomCode}/settings/`,
+            state: { guestCanPause: guestCanPause,
+            votesToSkip: votesToSkip }
+          }}
         component = {Link}
         
       >
