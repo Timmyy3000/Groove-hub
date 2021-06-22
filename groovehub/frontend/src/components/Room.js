@@ -185,7 +185,7 @@ const Room = (props) => {
         </Collapse>
       </Grid>
       <Grid item xs={12} align="center">
-        
+        {song.}
       </Grid>
 
       {settingsButton}
