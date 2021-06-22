@@ -4,6 +4,8 @@ import { Button, Collapse, Grid, IconButton, Typography} from "@material-ui/core
 import { Alert, AlertTitle } from '@material-ui/lab';
 import history from "./history";
 import CloseIcon from '@material-ui/icons/Close';
+import MusicPlayer from './MusicPlayer'
+
 
 const Room = (props) => {
 
@@ -25,7 +27,6 @@ const Room = (props) => {
     fetch('/spotify/is-authenticated/').then ((response) => response.json()).then ((data) =>{
       setSpotifyAuthenticated(data.status)
 
-      console.log(data.status)
 
       if (!data.status){
         fetch('/spotify/get-auth-url').then((response) => response.json()).then ((data) => {
@@ -106,19 +107,16 @@ const Room = (props) => {
       }
   };
 
-  function getCurrentSong(){
-    fetch('/spotify/current-song/').then((response) =>{
-      if (!response.ok){
-        
-        return {}
+  const delay = interval => new Promise(resolve => setTimeout(resolve, interval));
+  const sendMessage = async () => {
+    await delay(10000);
+    console.log(1)
+  };
 
-      } else {
-        return response.json()
-      }
-    }).then ((data) => {
-      setSong(data)
-      console.log(song)
-    })
+  sendMessage()
+
+  function getCurrentSong(){
+    
   }
 
   getRoomDetails();
@@ -134,16 +132,16 @@ const Room = (props) => {
     };
 
     fetch("/api/leave-room/", requestOptions).then((response) => {
+      console.log(response)
       props.history.push("/");
     });
   };
 
-  const interval = setInterval(getCurrentSong(), 1000)
-  clearInterval(interval)
+
   
   useEffect(() => {
     const roomCode = props.match.params.roomCode;    
-    history.replace(`/room/${roomCode}/`, null);
+   
     
   });
 
@@ -185,7 +183,7 @@ const Room = (props) => {
         </Collapse>
       </Grid>
       <Grid item xs={12} align="center">
-        {song.}
+        <MusicPlayer song = {song}/>
       </Grid>
 
       {settingsButton}
