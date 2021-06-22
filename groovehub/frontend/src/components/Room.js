@@ -12,7 +12,9 @@ const Room = (props) => {
   const [isHost, setIsHost] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
   const [spotifyAuthenticated, setSpotifyAuthenticated] = useState(false)
+  const [song, setSong] = useState({})
   let message = null;
+  let settingsButton = "";
   
   const roomCode = props.match.params.roomCode;
 
@@ -103,8 +105,27 @@ const Room = (props) => {
         authenticateSpotify()
       }
   };
-  getRoomDetails();
 
+  function getCurrentSong(){
+    fetch('/spotify/current-song/').then((response) =>{
+      if (!response.ok){
+        
+        return {}
+
+      } else {
+        return response.json()
+      }
+    }).then ((data) => {
+      setSong(data)
+     
+    })
+  }
+
+  getRoomDetails();
+  
+
+
+  
 
   const leaveButtonPressed = () => {
     const requestOptions = {
@@ -121,9 +142,14 @@ const Room = (props) => {
   useEffect(() => {
     const roomCode = props.match.params.roomCode;
     history.replace(`/room/${roomCode}/`, null);
+    const interval = setInterval(getCurrentSong(), 1000)
+    clearInterval(interval)
+    
   });
 
-  let settingsButton = "";
+  
+
+  
 
   if (isHost == true) {
     settingsButton = (
@@ -143,6 +169,8 @@ const Room = (props) => {
     );
   }
 
+ 
+
 
   return (
     <Grid container spacing={1}>
@@ -157,19 +185,7 @@ const Room = (props) => {
         </Collapse>
       </Grid>
       <Grid item xs={12} align="center">
-        <Typography variant="h6" component="h6">
-          Votes To Skip : {votesToSkip}
-        </Typography>
-      </Grid>
-      <Grid item xs={12} align="center">
-        <Typography variant="h6" component="h6">
-          Host : {isHost.toString()}
-        </Typography>
-      </Grid>
-      <Grid item xs={12} align="center">
-        <Typography variant="h6" component="h6">
-          Guest Can Pause : {guestCanPause.toString()}
-        </Typography>
+        
       </Grid>
 
       {settingsButton}

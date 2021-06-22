@@ -96,19 +96,21 @@ class CurrentSong(APIView):
         album_cover = item.get('album').get('images')[0].get('url')
         is_playing = response.get('is_playing')
         song_id = item.get('id')
+        album = item.get('album')
 
 
-        artist_string = ""
+        artist_string = album.get('artists')[0].get('name')
 
-        for i, artist in enumerate(item.get('artist')):
+        for i, artist in enumerate(item.get('artists')):
             if i > 0:
                 artist_string += ', '
                 name = artist.get('name')
                 artist_string += name
+            
 
         song = {
             'title' : item.get('name'),
-            'artist' : artist_string,
+            'artists' : artist_string,
             'duration' : duration,
             'time' : progress,
             'image_url' : album_cover,
