@@ -117,7 +117,7 @@ const Room = (props) => {
       }
     }).then ((data) => {
       setSong(data)
-     
+      console.log(song)
     })
   }
 
@@ -137,15 +137,13 @@ const Room = (props) => {
       props.history.push("/");
     });
   };
+
   const interval = setInterval(getCurrentSong(), 1000)
   clearInterval(interval)
   
   useEffect(() => {
-    const roomCode = props.match.params.roomCode;
-
+    const roomCode = props.match.params.roomCode;    
     history.replace(`/room/${roomCode}/`, null);
-    
-    
     
   });
 
