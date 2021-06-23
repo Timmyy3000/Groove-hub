@@ -34,6 +34,7 @@ const Room = (props) => {
   const [isOpen, setIsOpen] = useState(true);
   const [song, setSong] = useState({})
   const roomCode = props.match.params.roomCode;    
+  const [runCall, setRunCall] = useState(true)
 
   let message = null;
   let settingsButton = "";
@@ -47,7 +48,7 @@ const Room = (props) => {
   function authenticateSpotify () {
 
     fetch('/spotify/is-authenticated/').then ((response) => response.json()).then ((data) =>{
-      console.log(data.status)
+      
       if (!data.status){
         
         fetch('/spotify/get-auth-url').then((response) => response.json()).then ((data) => {
@@ -62,7 +63,7 @@ const Room = (props) => {
 
   function renderMessage (success, text) {
     if (success == true) {
-        console.log('success')
+      
         renderedMessage  = (<Alert severity="success" action={
             <IconButton
               aria-label="close"
@@ -125,7 +126,7 @@ const getCurrentSong = ()  =>{
     })
     .then((data) => {
       setSong(data);
-      console.log(data);
+      
     });
 }
 
@@ -136,8 +137,8 @@ const leaveButtonPressed = () => {
   };
 
   fetch("/api/leave-room/", requestOptions).then((response) => {
-    console.log(response)
-    history.push("/");
+    setRunCall(false)
+    
   });
 };
 
@@ -160,19 +161,25 @@ const leaveButtonPressed = () => {
   
   
   
-  
+  if (runCall)  {
+    useInterval(getCurrentSong, 1000)
+  }
 
 
   getRoomDetails()
 
-  useInterval(getCurrentSong, 1000)
+  // 
 
   useEffect(() => {
-    const roomCode = props.roomCode;    
+    const roomCode = props.roomCode;  
+      
 
     
   });
 
+  const handleUpdateClicked = () => {
+    setRunCall(false)
+  }
   
 
   
@@ -187,6 +194,7 @@ const leaveButtonPressed = () => {
             pathname: `/room/${roomCode}/settings/`,
             state: { guestCanPause: guestCanPause, votesToSkip: votesToSkip },
           }}
+          onClick={handleUpdateClicked}
           component={Link}
         >
           Update Room
@@ -220,7 +228,10 @@ const leaveButtonPressed = () => {
         <Button
           variant="contained"
           color="secondary"
+         
+          to={`/`}
           onClick={leaveButtonPressed}
+          component={Link}
         >
           Leave Room
         </Button>

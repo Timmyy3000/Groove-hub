@@ -21,6 +21,9 @@ const CreateRoomPage = (props) => {
 
     const [votesToSkip, setVotesToSkip ] = useState(defaultVotes);
 
+    const [isAuth, setisAuth] = useState(false)
+
+    const state = { guestCanPause, votesToSkip}
     
 
     const handleVotesChange = (e) => {
@@ -31,9 +34,34 @@ const CreateRoomPage = (props) => {
         setGuestCanPause(e.target.value === 'true' ? true : false)
     }
 
-    const state = { guestCanPause, votesToSkip}
+   
+
+
+    function authenticateSpotify () {
+
+        fetch('/spotify/is-authenticated/').then ((response) => response.json()).then ((data) =>{
+          setisAuth(data.status)
+          if (!data.status){
+            
+            fetch('/spotify/get-auth-url').then((response) => response.json()).then ((data) => {
+
+              window.location.replace(data.url)
+            })
+          }
+    
+        })
+      }
 
     const handleCreateRoomButtonPressed = () =>{
+        authenticateSpotify()
+
+        if (isAuth){
+            createRoom()
+        }
+
+    }
+
+    const createRoom = () => {
         const requestOptions = {
             method : "POST",
             headers : {'Content-Type' : 'application/json'},
@@ -44,11 +72,11 @@ const CreateRoomPage = (props) => {
         };
         fetch('/api/create-room/', requestOptions).then((response) =>
             response.json()
-        ).then((data) => 
-            props.history.push('/')
-        );
+        ).then((data) => {
+      
+            props.history.push(`/room/${data.code}/`)
+    });
     }
-
     return (
     <>
         <Grid container spacing={1}>

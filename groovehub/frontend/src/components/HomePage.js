@@ -32,19 +32,7 @@ const HomePage = (props) => {
     })
 
 
-    const getRoomDetails = () => {
-      fetch("/api/get-room/" + "?code=" + roomCode)
-        .then((response) => {
-         
-          return response.json();
-        })
-        .then((data) => {
-          setVotesToSkip(data.votes_to_skip);
-          setGuestCanPause(data.guest_can_pause);
-          setIsHost(data.is_host);
-        });
-    };
-
+    
     if (roomCode == null) {
 
       return (
@@ -71,7 +59,6 @@ const HomePage = (props) => {
     
     else {
 
-      getRoomDetails() 
 
       return <Redirect to ={ 
       `/room/${roomCode}/`} />
