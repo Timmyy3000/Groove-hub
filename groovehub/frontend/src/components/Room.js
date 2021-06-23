@@ -1,34 +1,55 @@
-import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { Button, Collapse, Grid, IconButton, Typography} from "@material-ui/core";
 import { Alert, AlertTitle } from '@material-ui/lab';
 import history from "./history";
 import CloseIcon from '@material-ui/icons/Close';
 import MusicPlayer from './MusicPlayer'
 
+const useInterval=  (callback , delay ) => {
+    const savedCallBack = useRef();
+
+    useEffect(() => {
+      savedCallBack.current = callback
+    }, [callback]);
+
+    useEffect(() => {
+      function tick () {
+        savedCallBack.current()
+      }
+      if (delay !== null) {
+        const id = setInterval(tick,delay);
+        return () => {
+          clearInterval(id);
+        }
+      }
+    }, [callback, delay])
+}
 
 const Room = (props) => {
 
-  const [votesToSkip, setVotesToSkip] = useState("");
+  const [votesToSkip, setVotesToSkip] = useState('');
   const [guestCanPause, setGuestCanPause] = useState(false);
   const [isHost, setIsHost] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
-  const [spotifyAuthenticated, setSpotifyAuthenticated] = useState(false)
   const [song, setSong] = useState({})
+  const roomCode = props.match.params.roomCode;    
+
   let message = null;
   let settingsButton = "";
-  
-  const roomCode = props.match.params.roomCode;
 
   const location = useLocation();
+
+  let renderedMessage = ''
+
+
 
   function authenticateSpotify () {
 
     fetch('/spotify/is-authenticated/').then ((response) => response.json()).then ((data) =>{
-      setSpotifyAuthenticated(data.status)
-
-
+      console.log(data.status)
       if (!data.status){
+        
         fetch('/spotify/get-auth-url').then((response) => response.json()).then ((data) => {
           window.location.replace(data.url)
         })
@@ -37,7 +58,7 @@ const Room = (props) => {
     })
   }
 
-  let renderedMessage = ''
+  
 
   function renderMessage (success, text) {
     if (success == true) {
@@ -76,6 +97,52 @@ const Room = (props) => {
     }
 }
 
+const getRoomDetails = () => {
+  fetch("/api/get-room/" + "?code=" + roomCode)
+    .then((response) => {
+     
+      return response.json();
+    })
+    .then((data) => {
+      setVotesToSkip(data.votes_to_skip);
+      setGuestCanPause(data.guest_can_pause);
+      setIsHost(data.is_host);
+    });
+
+    if (isHost){
+      authenticateSpotify()
+    }
+};
+
+const getCurrentSong = ()  =>{
+  fetch("/spotify/current-song")
+    .then((response) => {
+      if (!response.ok) {
+        return {};
+      } else {
+        return response.json();
+      }
+    })
+    .then((data) => {
+      setSong(data);
+      console.log(data);
+    });
+}
+
+const leaveButtonPressed = () => {
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+  };
+
+  fetch("/api/leave-room/", requestOptions).then((response) => {
+    console.log(response)
+    history.push("/");
+  });
+};
+
+
+
   if (location.state != null) {
     message = location.state;
 
@@ -88,60 +155,21 @@ const Room = (props) => {
     }
   }
 
-  
-
-  const getRoomDetails = () => {
-    fetch("/api/get-room" + "?code=" + roomCode)
-      .then((response) => {
-       
-        return response.json();
-      })
-      .then((data) => {
-        setVotesToSkip(data.votes_to_skip);
-        setGuestCanPause(data.guest_can_pause);
-        setIsHost(data.is_host);
-      });
-
-      if (isHost){
-        authenticateSpotify()
-      }
-  };
-
-  const delay = interval => new Promise(resolve => setTimeout(resolve, interval));
-  const sendMessage = async () => {
-    await delay(10000);
-    console.log(1)
-  };
-
-  sendMessage()
-
-  function getCurrentSong(){
-    
-  }
-
-  getRoomDetails();
-  
 
 
   
-
-  const leaveButtonPressed = () => {
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    };
-
-    fetch("/api/leave-room/", requestOptions).then((response) => {
-      console.log(response)
-      props.history.push("/");
-    });
-  };
-
-
   
+  
+  
+
+
+  getRoomDetails()
+
+  useInterval(getCurrentSong, 1000)
+
   useEffect(() => {
-    const roomCode = props.match.params.roomCode;    
-   
+    const roomCode = props.roomCode;    
+
     
   });
 

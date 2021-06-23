@@ -24,7 +24,7 @@ const App = () => {
             <Route exact path="/"  > <HomePage/></Route>
             <Route path="/join-room/"  component={JoinRoomPage}></Route>
             <Route path="/create-room/"  component={CreateRoomPage}  ></Route>
-            <Route  exact path="/room/:roomCode/" component={Room} ></Route>
+            <Route exact path="/room/:roomCode/" render = {(<div>Hello00000000</div>)}> </Route>
             <Route path="/room/:roomCode/settings/" component={RoomSettingsPage} ></Route>
           </Switch>
       </Router>

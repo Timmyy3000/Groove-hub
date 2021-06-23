@@ -54,11 +54,12 @@ class GetRoom (APIView):
     def get (self, request, format=None):
 
         code = request.GET.get(self.lookup_url_kward)
+
         if code != None :
             room = Room.objects.filter(code = code)
 
             if len(room) > 0:
-                data = RoomSerializer(room[0]).data
+                data = self.serializer_class(room[0]).data
                 data['is_host'] = self.request.session.session_key == room[0].host
 
                 return Response(data, status=status.HTTP_200_OK)

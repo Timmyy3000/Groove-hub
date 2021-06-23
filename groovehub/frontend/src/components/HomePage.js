@@ -15,6 +15,9 @@ const HomePage = (props) => {
   const history = useHistory()
 
   const [roomCode, setRoomCode] = useState(null)
+  const [votesToSkip, setVotesToSkip] = useState('');
+  const [guestCanPause, setGuestCanPause] = useState(false);
+  const [isHost, setIsHost] = useState(false);
     
     useEffect(async () => {
 
@@ -22,12 +25,25 @@ const HomePage = (props) => {
         .then((response) => response.json())
         .then((data) => {
             setRoomCode(data.code)
-            console.log(roomCode)
-            
+         
 
         });
 
     })
+
+
+    const getRoomDetails = () => {
+      fetch("/api/get-room/" + "?code=" + roomCode)
+        .then((response) => {
+         
+          return response.json();
+        })
+        .then((data) => {
+          setVotesToSkip(data.votes_to_skip);
+          setGuestCanPause(data.guest_can_pause);
+          setIsHost(data.is_host);
+        });
+    };
 
     if (roomCode == null) {
 
@@ -54,7 +70,11 @@ const HomePage = (props) => {
     }
     
     else {
-      return <Redirect to ={`/room/${roomCode}/`}/>
+
+      getRoomDetails() 
+
+      return <Redirect to ={ 
+      `/room/${roomCode}/`} />
     }
 
     
